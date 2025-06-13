@@ -26,9 +26,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "clean": "rimraf dist node_modules",
-    "reinstall": "npm run clean && npm install"
+    "build": "npx tsc && vite build",
+    "preview": "vite preview"
   }
 }

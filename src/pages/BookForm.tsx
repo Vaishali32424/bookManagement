@@ -17,6 +17,8 @@ import { toast } from 'react-toastify';
 
 import { getBooks, createBook, updateBook, Book } from '../services/api';
 
+type BookFormData = Omit<Book, '_id'>;
+
 const schema = yup.object().shape({
   title: yup.string().required('Title is required'),
   author: yup.string().required('Author is required'),
@@ -26,11 +28,12 @@ const schema = yup.object().shape({
     .required('Published year is required')
     .min(1000, 'Invalid year')
     .max(new Date().getFullYear(), 'Year cannot be in the future'),
-  status: yup.string().required('Status is required'),
+  status: yup.string().oneOf(['Available', 'Issued'] as const).required('Status is required'),
 });
 
 const genres = ['Fiction', 'Non-Fiction', 'Science Fiction', 'Mystery', 'Romance', 'Biography'];
-const statuses = ['Available', 'Issued'];
+const statuses = ['Available', 'Issued'] as const;
+type Status = typeof statuses[number];
 
 const BookForm = () => {
   const navigate = useNavigate();
@@ -41,18 +44,17 @@ const BookForm = () => {
   const {
     register,
     handleSubmit,
-    reset,
     setValue,
     watch,
     formState: { errors },
-  } = useForm<Omit<Book, '_id'>>({
+  } = useForm<BookFormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       title: '',
       author: '',
       genre: '',
       publishedYear: new Date().getFullYear(),
-      status: 'Available'
+      status: 'Available' as Status
     }
   });
 
@@ -98,12 +100,12 @@ const BookForm = () => {
         setValue('author', book.author);
         setValue('genre', book.genre);
         setValue('publishedYear', book.publishedYear);
-        setValue('status', book.status);
+        setValue('status', book.status as Status);
       }
     }
   }, [id, books, isEditMode, setValue]);
 
-  const onSubmit = (data: Omit<Book, '_id'>) => {
+  const onSubmit = (data: BookFormData) => {
     if (isEditMode) {
       updateMutation.mutate({ id: id!, data });
     } else {
@@ -177,7 +179,7 @@ const BookForm = () => {
           size='small'
           margin="normal"
           value={currentStatus}
-          onChange={(e) => setValue('status', e.target.value)}
+          onChange={(e) => setValue('status', e.target.value as Status)}
           error={Boolean(errors.status)}
           helperText={errors.status?.message}
         >

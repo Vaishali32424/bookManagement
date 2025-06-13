@@ -14,14 +14,14 @@ import {
   IconButton,
   Typography,
   Skeleton,
-  Chip,
+
 } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 
-import { getBooks, deleteBook, Book } from '../services/api';
+import { getBooks, deleteBook } from '../services/api';
 
 const genres = ['Fiction', 'Non-Fiction', 'Science Fiction', 'Mystery', 'Romance', 'Biography'];
 const statuses = ['Available', 'Issued'];
